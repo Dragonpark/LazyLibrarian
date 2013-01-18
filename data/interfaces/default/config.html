@@ -1,0 +1,174 @@
+<%inherit file="base.html"/>
+<%!
+    import lazylibrarian
+%>
+
+<%def name="headerIncludes()">
+    <div id="subhead_container">
+        <ul id="subhead_menu">
+            <li><a onclick="self.shutdownQA(this)" id="button">Shutdown</a></li>
+            <li><a id="button" onclick="self.restartQA(this, '', '')">Restart</a></li>
+            <li ><a id="button" href="checkForUpdates">Check for Updates</a></li>
+        </ul>
+    </div>
+</%def>
+<%def name="body()">
+    <form action="configUpdate" method="post">
+    <div id="form">
+    <div id="tabs">
+		<ul>
+			<li id="tabs1" class="active"><a  href="#tabs-1" onclick="$('#tabs2').removeClass('active');$('#tabs3').removeClass('active');$('#tabs4').removeClass('active');$('.table_wrapper').hide();$('.tabs-1').parent().show();$('#tabs1').addClass('active');">Web Interface</a></li>
+			<li id="tabs2" ><a  href="#tabs-2" onclick="$('#tabs1').removeClass('active');$('#tabs3').removeClass('active');$('#tabs4').removeClass('active');$('.table_wrapper').hide();$('.tabs-2').parent().show();$('#tabs2').addClass('active');">Import Options</a></li>
+			<li id="tabs3" ><a  href="#tabs-3" onclick="$('#tabs2').removeClass('active');$('#tabs1').removeClass('active');$('#tabs4').removeClass('active');$('.table_wrapper').hide();$('.tabs-3').parent().show();$('#tabs3').addClass('active');">Download Settings</a></li>
+			<li id="tabs4" ><a  href="#tabs-4" onclick="$('#tabs2').removeClass('active');$('#tabs3').removeClass('active');$('#tabs1').removeClass('active');$('.table_wrapper').hide();$('.tabs-4').parent().show();$('#tabs4').addClass('active');">Providers</a></li>
+		</ul>
+    </div>
+    <div class="table_wrapper">
+        
+        <div class="tabs-1">
+        <table class="configtable" summary="Webinterface">
+            <tr>
+                <td>
+                  <h5>Hostname:</h5><input type="text" name="http_host" value="${config['http_host']}" size="20" maxlength="40">
+                  <h5>Port:</h5><input type="text" name="http_port" value="${config['http_port']}" size="10" maxlength="40">
+                  <br>
+                  <br>
+                  <h5>Logdir:</h5><input type="text" name="logdir" value="${config['logdir']}" size="50"><br>
+                </td>
+                <td>
+                  <h5>Username:</h5><input type="text" name="http_user" value="${config['http_user']}" size="20" maxlength="40">
+                  <h5>Password:</h5><input type="password" name="http_pass" value="${config['http_pass']}" size="20" maxlength="40">
+                </td>
+                <td>
+                    <h5><input type="checkbox" name="launch_browser" value=1 ${config['launch_browser']} /> Launch browser</h5>
+                    <br>
+                    <h5>Interface: <select name="http_look"><h5>
+                    %for http_look in config['http_look_list']:
+                        <%
+                            if http_look == lazylibrarian.HTTP_LOOK:
+                                selected = 'selected="selected"'
+                            else:
+                                selected = ''
+                        %>
+                        <option value="${http_look}" ${selected}>${http_look}</option>
+                    %endfor
+                    </select>
+                </td>
+            </tr>
+        </table>
+        </div>
+    </div>
+
+
+   <div class="table_wrapper" style="display:none">
+        <div class="tabs-2">
+        <table class="configtable" summary="Importsettings">
+            <tr>
+                <td>
+                    <h3>Move and rename<h3>
+                </td>
+                <td>
+                    <h3>Language</h3>
+                </td>
+				<td>
+                    <h3>Ebook Type</h3>
+                </td>
+            </tr>
+            <td>
+                <h5>Destination:</h5><input type="text" name="destination_dir" value="${config['destination_dir']}" size="50">
+                <h5><input type="checkbox" name="destination_copy" value=1 ${config['use_destination_copy']} /> Keep original files</h3>
+            </td>
+            <td>
+<!--                <h5><input type="checkbox" name="imp_onlyisbn" value=1 ${config['use_imp_onlyisbn']} /> Hide books without ISBN</h5>-->
+<!--                <br>-->
+                <h5>Import languages:</h5><input type="text" name="imp_preflang" value="${config['imp_preflang']}" size="20" maxlength="40">
+                <br>
+                <i class="smalltext">Comma separated country shortcodes, e.g.:<br> eng, spa, por</i>
+            </td>
+			<td>
+<!--                <h5><input type="checkbox" name="imp_onlyisbn" value=1 ${config['use_imp_onlyisbn']} /> Hide books without ISBN</h5>-->
+<!--                <br>-->
+                <h5>Ebook Format:</h5><input type="text" name="ebook_type" value="${config['ebook_type']}" size="0" maxlength="4">
+                <br>
+                <i class="smalltext">Spesify one of the following options (or leave blank to search for any format): <br> epub, mobi, txt</i>
+            </td>
+        </table>
+        </div>
+    </div>
+
+
+    <div class="table_wrapper" style="display:none">
+        <div class="tabs-3">
+        <table class="configtable" summary="Downloadsettings">
+            <tr>
+                <td>
+                    <h3>SABnzbd+:</h3>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h5>Hostname:</h5><input type="text" name="sab_host" value="${config['sab_host']}" size="20" maxlength="40">
+                    <h5>Port:</h5><input type="text" name="sab_port" value="${config['sab_port']}" size="20" maxlength="40">
+                    <br>
+                    <h5>Usenet retention:</h5><input type="text" name="usenet_retention" value="${config['usenet_retention']}" size="20" maxlength="40">
+                </td>
+                <td>
+                    <h5>API Key:</h5><input type="text" name="sab_api" value="${config['sab_api']}" size="30" maxlength="40">
+                    <h5>Username:</h5><input type="text" name="sab_user" value="${config['sab_user']}" size="30" maxlength="40">
+                    <h5>Password:</h5><input type="password" name="sab_pass" value="${config['sab_pass']}" size="30" maxlength="40">
+                </td>
+                <td>
+                    <h5>Category:</h5><input type="text" name="sab_cat" value="${config['sab_cat']}" size="30">
+                    <h5>Directory:</h5><input type="text" name="download_dir" value="${config['download_dir']}" size="50">
+                    <i class="smalltext">Full path to the folder where books are downloaded to.</i>
+                    <h5><input type="checkbox" name="blackhole" value=1 ${config['use_blackhole']} /> Use blackhole</h5>
+                    <input type="text" name="blackholedir" value="${config['blackholedir']}" size="50">
+                    <i class="smalltext">The folder your nzb-downloader monitors for nzb-files.</i>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h3>Goodreads:</h3>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h5>API:</h5><input type="text" name="gr_api" value="${config['gr_api']}" size="50" maxlength="40" >
+                </td>
+            </tr>
+        </table>
+        </div>
+    </div>
+
+    <div class="table_wrapper" style="display:none">
+        <div class="tabs-4">
+        <table class="configtable" summary="Providers">
+            <tr>
+                <td>
+                    <h3>Newznab Providers</h3>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="checkbox" name="newznab" value=1 ${config['use_newznab']} style="margin-bottom:4px;" />
+                    <input type="text" placeholder="Enter Host Here" name="newznab_host" value="${config['newznab_host']}" size="20" maxlength="40">
+                    <input type="text" placeholder="Enter API Here" name="newznab_api" value="${config['newznab_api']}" size="30" maxlength="40">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="checkbox" name="newznab2" value=1 ${config['use_newznab2']} style="margin-bottom:4px;" />
+                    <input type="text" placeholder="Enter Host Here" name="newznab_host2" value="${config['newznab_host2']}" size="20" maxlength="40">
+                    <input type="text" placeholder="Enter API Here" name="newznab_api2" value="${config['newznab_api2']}" size="30" maxlength="40">
+                </td>
+            </tr>
+        </table>
+        </div>
+    </div>
+    <div class="table_wrapper_button">
+        <p><input type="submit" value="Save changes" id="add" style="float:right;"></p>
+    </div>
+	<p style="text-align:center;position:fixed;bottom:10px;margin-left:20px;color:grey">Current Version: ${lazylibrarian.LATEST_VERSION}</p>
+    </div>
+</form>
+</%def>
